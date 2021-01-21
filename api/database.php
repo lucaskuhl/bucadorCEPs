@@ -1,17 +1,19 @@
 <?php
-
 require '..\vendor\autoload.php';
 
+class Database
+{
+    const MONGODB_USER = "teste";
+    const MONGODB_PASSWORD = "teste";
+    const MONGODB_DB_NAME = "datafreteteste";
 
-$client = new MongoDB\Client(
-    'mongodb+srv://teste:teste@datafreteteste.a0k3t.mongodb.net/datafreteteste?retryWrites=true&w=majority');
+    public function __construct()
+    {
+        $url = "mongodb+srv://" . self::MONGODB_USER . ":" . self::MONGODB_PASSWORD . "@datafreteteste.a0k3t.mongodb.net/" . self::MONGODB_DB_NAME . "?retryWrites=true&w=majority";
+        $client = new MongoDB\Client($url);
+        $db = $client->datafreteteste->datafrete;
 
-$db = $client->datafreteteste->datafrete;
+        var_dump($db);
+    }
+}
 
-$insertOneResult = $db->insertOne([
-    'cep_destino' => '0000000',
-    'cep_origem' => '0000000',
-    'distancia' => '0000000',
-]);
-
-var_dump($insertOneResult);
