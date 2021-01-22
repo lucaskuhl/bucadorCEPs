@@ -1,17 +1,28 @@
 <?php
 
-require '..\vendor\autoload.php';
-require '.\database.php';
-require '..\cep\create.php';
+use MongoDB\Operation\Explain;
 
-const CEP_ABERTO_URL = "https://www.cepaberto.com/api/v3/";
-const CEP_ACCESS_TOKEN = "55e95b36b9a2a995488534ba0c63973b";
+require '.\vendor\autoload.php';
+require '.\database.php';
+require '.\cep\create.php';
+require '.\utils\validateCEP.php';
+require '.\utils\distance.php';
 
 $cepOrigem = isset($_GET['cep_origem']) ? $_GET['cep_origem'] : "";
 $cepDestino = isset($_GET['cep_destino']) ? $_GET['cep_destino'] : "";
 
 $create = new createCep(['cepOrigem' => $cepOrigem, 'cepDestino' => $cepDestino]);
-$create->createCep();
+$validate = new validateCEP(['cepOrigem' => $cepOrigem, 'cepDestino' => $cepDestino]);
+
+$coord = $validate->validateCep();
+$distance = new distance($coord);
+
+$d = $distance->getDistance($coord);
+
+var_dump($d);
+// $create->createCep();
+
+
 
 
 // $insertOneResult = $db->insertOne([

@@ -1,28 +1,23 @@
 <?php
 
-class createCep
+class validateCEP
 {
     public $cepOrigem;
     public $cepDestino;
-    public $distancia;
     private $_CEP_ABERTO_URL = "https://www.cepaberto.com/api/v3/";
     private $_CEP_ACCESS_TOKEN = "55e95b36b9a2a995488534ba0c63973b";
 
-    public function __construct(array $cep = null)
+    public function __construct(array $cep)
     {
+        if ($cep['cepOrigem'] == "") {
+            return http_response_code(406);
+        }
         $this->cepOrigem = $cep['cepOrigem'];
         $this->cepDestino = $cep['cepDestino'];
         $this->distancia = isset($cep['distancia']) ? $cep['distancia'] : "";
     }
 
-    public function createCep()
-    {
-        $coord = $this->validateCep();
-
-        var_dump($this->getDistance($coord));
-    }
-
-    private function validateCep()
+    public function validateCep()
     {
         $valid = ['origem' => false, 'destino' => false];
         $urlOrigem = $this->_CEP_ABERTO_URL . "cep?cep=" . $this->cepOrigem;
@@ -55,7 +50,7 @@ class createCep
         curl_setopt($crl, CURLOPT_TIMEOUT, 3);
         $jsonContent = trim(curl_exec($crl));
         curl_close($crl);
-        if ($jsonContent !== "{}" && $jsonContent !== "403 Forbidden (Rate Limit Exceeded)") {
+        if ($jsonContent !== "{}") {
             $content = json_decode($jsonContent, true);
             $data = ['cep' => '0', 'latitude' => '0', 'longitude' => '0'];
             $data['cep'] = isset($content['cep']) ? $content['cep'] : null;
@@ -72,17 +67,19 @@ class createCep
         $cordOrigem = $ceps['origem'];
         $cordDestino = $ceps['destino'];
 
-        $latitudeOrigem = deg2rad($cordOrigem['latitude']);
-        $latitudeDestino = deg2rad($cordDestino['latitude']);
-        $longitudeOrigem = deg2rad($cordOrigem['longitude']);
-        $longitudeDestino = deg2rad($cordDestino['longitude']);
+        var_dump($cordOrigem);
+        var_dump($cordDestino);
+        $radio = 6371;
+        $phi1 = $cordOrigem['latitude'] *  M_PI/180;
+        $phi2 = $cordDestino['latitude'] *  M_PI/180;
+        $deltaPhi = ($cordDestino['latitude'] -$cordOrigem['latitude']) * M_PI/180;
+        $deltaLambda = ($cordDestino['longitude'] -$cordOrigem['longitude']) * M_PI/180;
 
-        $latD = $latitudeDestino - $latitudeOrigem;
-        $lonD = $longitudeDestino - $longitudeOrigem;
+        $a = (sin($deltaPhi/2) * sin($deltaPhi/2)) + cos($phi1) * cos($phi2) * (sin($deltaLambda/2) * sin($deltaLambda/2));
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $d = $radio * $c;
 
-        $dist = 2 * asin(sqrt(pow(sin($latD / 2), 2) +
-            cos($latitudeOrigem) * cos($latitudeDestino) * pow(sin($lonD / 2), 2)));
-        $dist = $dist * 6371;
-        return $dist;
+        return $d;
     }
+
 }
