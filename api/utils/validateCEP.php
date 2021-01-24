@@ -7,19 +7,24 @@ class validateCEP
     private $_CEP_ABERTO_URL = "https://www.cepaberto.com/api/v3/";
     private $_CEP_ACCESS_TOKEN = "55e95b36b9a2a995488534ba0c63973b";
 
-    public function __construct(array $cep)
+    public function validateCep(array $cep)
     {
-        if ($cep['cepOrigem'] == "") {
-            return http_response_code(406);
+        $retError = null;
+        if ($cep['cep_origem'] == "") {
+            $retError['cep_origem'] = false;
+        } else {
+            $this->cepOrigem = $cep['cep_origem'];
         }
-        $this->cepOrigem = $cep['cepOrigem'];
-        $this->cepDestino = $cep['cepDestino'];
-        $this->distancia = isset($cep['distancia']) ? $cep['distancia'] : "";
-    }
+        if ($cep['cep_destino'] == "") {
+            $retError['cep_destino'] = false;
+        } else {
+            $this->cepDestino = $cep['cep_destino'];
+        }
+        if (!empty($retError)) {
+            return $retError;
+        }
 
-    public function validateCep()
-    {
-        $valid = ['origem' => false, 'destino' => false];
+        $valid = ['cep_origem' => false, 'cep_destino' => false];
         $urlOrigem = $this->_CEP_ABERTO_URL . "cep?cep=" . $this->cepOrigem;
         $urlDestino = $this->_CEP_ABERTO_URL . "cep?cep=" . $this->cepDestino;
 
@@ -27,10 +32,18 @@ class validateCEP
         sleep(1);
         $cepDestino = $this->checkCepAPI($urlDestino);
         if ($cepOrigem) {
-            $valid['origem'] = $cepOrigem;
+            $valid['cep_origem'] = $cepOrigem;
+        } else {
+            $retError['cep_origem'] = false;
         }
         if ($cepDestino) {
-            $valid['destino'] = $cepDestino;
+            $valid['cep_destino'] = $cepDestino;
+        } else {
+            $retError['cep_destino'] = false;
+        }
+
+        if (!empty($retError)) {
+            return $retError;
         }
 
         return $valid;
@@ -52,34 +65,9 @@ class validateCEP
         curl_close($crl);
         if ($jsonContent !== "{}") {
             $content = json_decode($jsonContent, true);
-            $data = ['cep' => '0', 'latitude' => '0', 'longitude' => '0'];
-            $data['cep'] = isset($content['cep']) ? $content['cep'] : null;
-            $data['latitude'] = isset($content['latitude']) ? $content['latitude'] : null;
-            $data['longitude'] = isset($content['longitude']) ? $content['longitude'] : null;
-            return $data;
+            return $content['cep'];
         }
 
         return false;
     }
-
-    private function getDistance(array $ceps)
-    {
-        $cordOrigem = $ceps['origem'];
-        $cordDestino = $ceps['destino'];
-
-        var_dump($cordOrigem);
-        var_dump($cordDestino);
-        $radio = 6371;
-        $phi1 = $cordOrigem['latitude'] *  M_PI/180;
-        $phi2 = $cordDestino['latitude'] *  M_PI/180;
-        $deltaPhi = ($cordDestino['latitude'] -$cordOrigem['latitude']) * M_PI/180;
-        $deltaLambda = ($cordDestino['longitude'] -$cordOrigem['longitude']) * M_PI/180;
-
-        $a = (sin($deltaPhi/2) * sin($deltaPhi/2)) + cos($phi1) * cos($phi2) * (sin($deltaLambda/2) * sin($deltaLambda/2));
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-        $d = $radio * $c;
-
-        return $d;
-    }
-
 }
