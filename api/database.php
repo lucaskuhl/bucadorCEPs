@@ -1,5 +1,7 @@
 <?php
-require '..\vendor\autoload.php';
+require_once '..\vendor\autoload.php';
+require_once './utils/distance.php';
+require_once './utils/lastId.php';
 
 class Database
 {
@@ -18,6 +20,7 @@ class Database
     public function add(array $data)
     {
         $this->collection->insertOne([
+            'uid' => $data['uid'],
             'cep_origem' => $data['cep_origem'],
             'cep_destino' => $data['cep_destino'],
             'distancia' => $data['distancia'],
@@ -34,5 +37,24 @@ class Database
         $unserializedData = json_decode(json_encode($BsonData->jsonSerialize()), true);
 
         return ['action' => true, 'data' => json_encode($unserializedData)];
+    }
+
+    public function update(String $id, String $cepOrigem, String $cepDestino)
+    {
+        $distanceObj = new distanceCep();
+        $distance = $distanceObj->getDistance(['cep_origem' => $cepOrigem, 'cep_destino' => $cepDestino]);
+        $this->collection->findOneAndUpdate(
+            ['uid' => $id],
+            [
+                '$set' =>
+                [
+                    'cep_origem' => $cepOrigem,
+                    'cep_destino' => $cepDestino,
+                    'distancia' => $distance,
+                    'data_update' => date('d/m/Y H:i:s')
+                ]
+            ]
+        );
+        return ['add' => true];
     }
 }

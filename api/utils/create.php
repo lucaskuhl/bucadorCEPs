@@ -1,8 +1,8 @@
 <?php
 
-require '..\vendor\autoload.php';
-require './utils/validateCEP.php';
-require './utils/distance.php';
+require_once '..\vendor\autoload.php';
+require_once './utils/validateCEP.php';
+require_once './utils/distance.php';
 
 class createCep
 {
@@ -26,9 +26,12 @@ class createCep
         if (!$validCep['cep_origem'] || !$validCep['cep_destino']) {
             return ['cep_origem' => false, 'cep_destino' => false];
         }
-        $distance = new Distance();
+        $distance = new distanceCep();
         $this->distancia = $distance->getDistance($validCep);
 
+        $lastIdObj = new lastId();
+        $lastIdObj->updateId();
+        $data['uid'] = $lastIdObj->getLastId();
         $data['cep_origem'] = $this->cepOrigem;
         $data['cep_destino'] = $this->cepDestino;
         $data['distancia'] = $this->distancia;

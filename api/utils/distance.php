@@ -1,6 +1,6 @@
 <?php
 
-class Distance
+class distanceCep
 {
     public $cepOrigem;
     public $cepDestino;
