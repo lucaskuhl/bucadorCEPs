@@ -27,7 +27,7 @@ class Database
             'data_cadastro' => date('d/m/Y H:i:s'),
             'data_update' => ''
         ]);
-        return ['add' => true];
+        return ['action' => true];
     }
 
     public function read()
@@ -55,6 +55,12 @@ class Database
                 ]
             ]
         );
-        return ['add' => true];
+        return ['action' => true];
+    }
+
+    public function delete(String $id)
+    {
+        $deleted = $this->collection->deleteOne(['uid' => $id]);
+        return ['action' => true];
     }
 }

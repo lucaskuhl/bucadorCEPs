@@ -1,16 +1,11 @@
 <?php
-session_start();
-$_SESSION['last_id'] = 0;
-?>
-<?php
-
-use MongoDB\Operation\Update;
 
 require_once '..\vendor\autoload.php';
 require_once '.\database.php';
 require_once '.\utils\create.php';
 require_once '.\utils\read.php';
 require_once '.\utils\update.php';
+require_once '.\utils\delete.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -34,6 +29,15 @@ if (isset($_GET['action'])) {
         case 'update':
             $update = new updateCep($id, $cepOrigem, $cepDestino);
             var_dump($update->updateCep());
+            break;
+
+        case 'delete':
+            $delete = new deleteCep($id);
+            var_dump($delete->deleteCep());
+            break;
+
+        default:
+            header("HTTP/1.0 404 Not Found");
             break;
     }
 }
