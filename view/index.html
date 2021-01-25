@@ -64,6 +64,20 @@
               <button class="btn btn-info" type="button" id="btnSend">
                 <span id="btnText">Calcular distância</span>
               </button>
+              <button
+                class="btn btn-info"
+                type="button"
+                id="btnLoading"
+                disabled
+              >
+                <span
+                  id="loading"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span
+                >Calculando...
+              </button>
             </div>
           </form>
         </div>
@@ -99,8 +113,10 @@
     src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"
   ></script>
   <script type="text/javascript" src="./js/create.js"></script>
+  <script type="text/javascript" src="./js/validate.js"></script>
 
   <script>
+    $("#btnLoading").hide();
     $.ajax({
       type: "GET",
       dataType: "json",
@@ -112,54 +128,47 @@
           data: JSON.parse(response),
           columns: [
             { data: "uid" },
-            { data: "cep_origem" }, //or { data: 'MONTH', title: 'Month' }`
+            { data: "cep_origem" },
             { data: "cep_destino" },
             { data: "distancia" },
-            { data: "data_cadastro" }, //or { data: 'MONTH', title: 'Month' }`
+            { data: "data_cadastro" },
             { data: "data_update" },
           ],
         });
       },
     });
 
-    $("#btnSend").click(() => {
+    $("#btnSend").click((e) => {
+      e.preventDefault();
+      $("#btnSend").hide();
+      $("#btnLoading").show();
       let cepOrigem = $("#cep-origem").val().trim();
       let cepDestino = $("#cep-destino").val().trim();
-      let valid = validate(cepOrigem, cepDestino);
-      if (valid[0] === false || valid[1] === false) {
-        console.log("vish");
-        console.log(valid);
-        return;
-      } else {
-        $('#btnText').hide();
-        $("#btnSend").attr("disabled","disabled");
-        $("#btnSend").append(
-          "<span id='loading' class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>Carregando..."
-        );
-        let data = createCep(cepOrigem, cepDestino);
-        console.log(data);
-      }
-      // validate();
+      validate(cepOrigem, cepDestino).then((result) => {
+        if (result["cep_origem"] === false || result["cep_destino"] === false) {
+          $("#btnSend").show();
+          $("#btnLoading").hide();
+          return;
+        }
+        createCep(result.cep_origem, result.cep_destino).then((res) => {
+          $("#btnSend").show();
+          $("#btnLoading").hide();
+
+          $("#cep-table").DataTable().clear().destroy();
+
+          $("#cep-table").DataTable({
+            data: JSON.parse(res),
+            columns: [
+              { data: "uid" },
+              { data: "cep_origem" },
+              { data: "cep_destino" },
+              { data: "distancia" },
+              { data: "data_cadastro" },
+              { data: "data_update" },
+            ],
+          });
+        });
+      });
     });
-
-    function validate(cepOrigem, cepDestino) {
-      let valid = [];
-      if (!cepOrigem || 0 === cepOrigem.length) {
-        $("#cep-origem").addClass("is-invalid");
-        valid.push(false);
-      } else {
-        $("#cep-origem").removeClass("is-invalid");
-        $("#cep-origem").addClass("is-valid");
-      }
-
-      if (!cepDestino || 0 === cepDestino.length) {
-        $("#cep-destino").addClass("is-invalid");
-        valid.push(false);
-      } else {
-        $("#cep-destino").removeClass("is-invalid");
-        $("#cep-destino").addClass("is-valid");
-      }
-      return valid;
-    }
   </script>
 </html>

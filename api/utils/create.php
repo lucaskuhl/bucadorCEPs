@@ -21,13 +21,8 @@ class createCep
 
     public function createCep()
     {
-        $validate = new validateCEP();
-        $validCep = $validate->validateCep(['cep_origem' => $this->cepOrigem, 'cep_destino' => $this->cepDestino]);
-        if (!$validCep['cep_origem'] || !$validCep['cep_destino']) {
-            return ['cep_origem' => false, 'cep_destino' => false];
-        }
         $distance = new distanceCep();
-        $this->distancia = $distance->getDistance($validCep);
+        $this->distancia = $distance->getDistance(['cep_origem' => $this->cepOrigem, 'cep_destino' => $this->cepDestino]);
 
         $lastIdObj = new lastId();
         $lastIdObj->updateId();

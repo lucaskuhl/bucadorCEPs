@@ -65,7 +65,7 @@ class validateCEP
         curl_close($crl);
         if ($jsonContent !== "{}") {
             $content = json_decode($jsonContent, true);
-            return $content['cep'];
+            return isset($content['cep']) ? $content['cep'] : "";
         }
 
         return false;

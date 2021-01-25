@@ -6,6 +6,7 @@ require_once '.\utils\create.php';
 require_once '.\utils\read.php';
 require_once '.\utils\update.php';
 require_once '.\utils\delete.php';
+require_once '.\utils\validateCEP.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -36,13 +37,14 @@ if (isset($_GET['action'])) {
             var_dump($delete->deleteCep());
             break;
 
+        case 'validate':
+            $validate = new validateCEP();
+            $validCep = $validate->validateCep(['cep_origem' => $cepOrigem, 'cep_destino' => $cepDestino]);
+            echo json_encode($validCep);
+            break;
+
         default:
             header("HTTP/1.0 404 Not Found");
             break;
     }
 }
-
-// $coord = $validate->validateCep();
-// $distance = new distance($coord);
-
-// $d = $distance->getDistance($coord);
