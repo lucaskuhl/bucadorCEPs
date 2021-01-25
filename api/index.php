@@ -15,6 +15,9 @@ $cepOrigem = isset($_GET['cep_origem']) ? $_GET['cep_origem'] : "";
 $cepDestino = isset($_GET['cep_destino']) ? $_GET['cep_destino'] : "";
 $id = isset($_GET['cep_id']) ? $_GET['cep_id'] : "";
 
+/**
+ * Routing do sistema
+ */
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'add':

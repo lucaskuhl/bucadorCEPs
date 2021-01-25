@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classe responsável por criar um cep e persisti-lo
+ */
 require_once '..\vendor\autoload.php';
 require_once './utils/validateCEP.php';
 require_once './utils/distance.php';
@@ -19,6 +22,13 @@ class createCep
         $this->distancia = "";
     }
 
+    /**
+     * Calcula a distância entre os dois ceps e monta o array de dados para persistir e atualiza a listagem de ids
+     * 
+     * @see distance.php
+     * @see lastId.php
+     * @return Array
+     */
     public function createCep()
     {
         $distance = new distanceCep();

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classe que pega todos os dados da collection
+ */
 class readCep
 {
     public function readAll()

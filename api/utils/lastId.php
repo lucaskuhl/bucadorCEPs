@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Classe criada com o objetivo de prover um suporte simples a criação de novos itens no banco
+ * Por algum motivo desconhecido tanto a dll de extensão do mongoDB, quanto a biblioteca indicada no site
+ * não implementam a classe MongoDB\BSON que seria utilizada para gerenciamento dos IDs.
+ */
+
 class lastId
 {
     public function getLastId()

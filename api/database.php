@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Classe que realiza todas as operações no MongoDB
+ */
+
+
 require_once '..\vendor\autoload.php';
 require_once './utils/distance.php';
 require_once './utils/lastId.php';
@@ -10,6 +16,9 @@ class Database
     const MONGODB_DB_NAME = "datafreteteste";
     private $collection;
 
+    /**
+     * Construtor criar a connection string e seta qual collection irá ser usada
+     */
     public function __construct()
     {
         $url = "mongodb+srv://" . self::MONGODB_USER . ":" . self::MONGODB_PASSWORD . "@datafreteteste.a0k3t.mongodb.net/" . self::MONGODB_DB_NAME . "?retryWrites=true&w=majority";
@@ -17,6 +26,10 @@ class Database
         $this->collection = $client->datafreteteste->datafrete;
     }
 
+    /**
+     * @param Array $data - Array com os dados à serem inseridos
+     * @return Array
+     */
     public function add(array $data)
     {
         $this->collection->insertOne([
@@ -30,6 +43,9 @@ class Database
         return ['action' => true];
     }
 
+    /**
+     * @return Array $unserializedData - Todos os valores inseirdos no banco
+     */
     public function read()
     {
         $rawData = $this->collection->find();
@@ -39,6 +55,12 @@ class Database
         return ['action' => true, 'data' => json_encode($unserializedData)];
     }
 
+    /**
+     * @param String $id
+     * @param String $cepOrigem
+     * @param String $cepDestino
+     * @return Array 
+     */
     public function update(String $id, String $cepOrigem, String $cepDestino)
     {
         $distanceObj = new distanceCep();
@@ -58,6 +80,9 @@ class Database
         return ['action' => true];
     }
 
+    /**
+     * @return Array
+     */
     public function delete(String $id)
     {
         $deleted = $this->collection->deleteOne(['uid' => $id]);

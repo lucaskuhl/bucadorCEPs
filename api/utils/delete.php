@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classse para deletar um CEP, apenas deleta por ID
+ */
 class deleteCep
 {
     private $id;

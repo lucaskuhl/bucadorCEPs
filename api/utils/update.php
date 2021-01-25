@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Classe que atualiza um dado da collection usando o campo 'uid' como padrão
+ */
 class updateCep
 {
 
@@ -7,7 +10,7 @@ class updateCep
     private $cepOrigem;
     private $cepDestino;
 
-    
+
     function __construct(String $id, String $cepOrigem, String $cepDestino)
     {
         $this->id = $id;
