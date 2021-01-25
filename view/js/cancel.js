@@ -1,3 +1,6 @@
+/**
+ * Reseta os botões e os inputs para a forma original
+ */
 const cancel = () => {
   $("#cep-origem").val("").removeClass("active");
   $("#cep-destino").val("").removeClass("active");

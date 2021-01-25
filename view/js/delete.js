@@ -1,3 +1,7 @@
+/**
+ *
+ * @param {String} id
+ */
 const deleteCep = (id) => {
   return new Promise((resolve, reject) => {
     resolve(
@@ -8,6 +12,11 @@ const deleteCep = (id) => {
   });
 };
 
+/**
+ * Manda o id para PHP deletar
+ *
+ * @param {String} id
+ */
 const deleteAPI = (id) => {
   return new Promise((resolve, reject) => {
     $.ajax({

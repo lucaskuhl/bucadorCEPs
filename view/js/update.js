@@ -1,3 +1,9 @@
+/**
+ *
+ * @param {String} uid
+ * @param {String} cep_origem
+ * @param {String} cep_destino
+ */
 const updateCep = (uid, cep_origem, cep_destino) => {
   let cepOrigem = cep_origem;
   let cepDestino = cep_destino;
@@ -11,6 +17,12 @@ const updateCep = (uid, cep_origem, cep_destino) => {
   });
 };
 
+/**
+ * Manda os dados atualizados para o PHP 
+ * @param {String} cepId
+ * @param {String} cepOrigem
+ * @param {String} cepDestino
+ */
 const updateAPI = (cepId, cepOrigem, cepDestino) => {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -32,6 +44,10 @@ const updateAPI = (cepId, cepOrigem, cepDestino) => {
   });
 };
 
+/**
+ * Atualiza os botões e os inputs para a configuração de atualizar uma entrada
+ * @param {String} data 
+ */
 const updateStyle = (data) => {
   let cepOrigem = data.cep_origem;
   let cepDestino = data.cep_destino;
@@ -45,6 +61,9 @@ const updateStyle = (data) => {
   $("#cep-destino").val(cepDestino).focus();
 };
 
+/**
+ * Pega os dados para recriar a tabela
+ */
 const getTableDataUpdate = () => {
   return new Promise((resolve, reject) => {
     $.ajax({

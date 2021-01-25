@@ -173,6 +173,7 @@
 
   <script>
     var selectedId;
+    // Seta os buttons ao iniciar
     $("#btnCancel").hide();
     $("#btnUpdate").hide();
     $("#btnLoadingUpdate").hide();
@@ -182,9 +183,7 @@
     $("#alertSuccess").hide();
     $("#alertDanger").hide();
 
-    $("#btnCancel").click(() => {
-      cancel();
-    });
+    // Carrega a tabela com os dados do mongoDB
     $.ajax({
       type: "GET",
       dataType: "json",
@@ -207,6 +206,19 @@
       },
     });
 
+    // Evento do botão de cancelar
+    $("#btnCancel").click(() => {
+      cancel();
+    });
+
+    /**
+     * Evento do botão de calcular
+     * Fazendo o uso de promises:
+     *  # Valida ambos os ceps
+     *  # Manda os dados para o php para serem criados
+     *  # Mostra / Esconde os botões conforme necessário
+     *  # Destrói a tabela e recria para atualizar os dados
+     * */
     $("#btnSend").click((e) => {
       e.preventDefault();
       $("#btnSend").hide();
@@ -259,6 +271,14 @@
       selectedId = data[0]["uid"];
     });
 
+    /**
+     * Evento do botão de atualizar
+     * Fazendo o uso de promises:
+     *  # Valida ambos os ceps
+     *  # Manda os dados para serem recalculados e ataualizados
+     *  # Mostra / Esconde os botões conforme necessário
+     *  # Destrói a tabela e recria para atualizar os dados
+     * */
     $("#btnUpdate").click((e) => {
       e.preventDefault();
       $("#btnUpdate").hide();
@@ -306,6 +326,12 @@
       );
     });
 
+    /**
+     * Evento do botão de excluir
+     * Fazendo o uso de promises:
+     *  # Manda os dados para o php excluir
+     * Remove a linha da tabela que fora selecionada
+     * */
     $("#btnDelete").click((e) => {
       e.preventDefault();
       $("#btnUpdate").hide();

@@ -1,3 +1,10 @@
+/**
+ *
+ * @param {String} cepOrigem
+ * @param {String} cepDestino
+ * @param {String} btnType ID do botão para ser escondido
+ * @param {String} btnLoading ID do botão de loading a ser mostrado
+ */
 const validate = (cepOrigem, cepDestino, btnType, btnLoading) => {
   return new Promise((resolve, reject) => {
     let validInput = validateInput(cepOrigem, cepDestino, btnType, btnLoading);
@@ -11,6 +18,13 @@ const validate = (cepOrigem, cepDestino, btnType, btnLoading) => {
   });
 };
 
+/**
+ *
+ * @param {String} cepOrigem
+ * @param {String} cepDestino
+ * @param {String} btnType ID do botão para ser escondido
+ * @param {String} btnLoading ID do botão de loading a ser mostrado
+ */
 const validateInput = (cepOrigem, cepDestino, btnType, btnLoading) => {
   let valid = [];
   if (!cepOrigem || 0 === cepOrigem.length) {
@@ -29,6 +43,11 @@ const validateInput = (cepOrigem, cepDestino, btnType, btnLoading) => {
   }
 };
 
+/**
+ * Manda os dados para o PHP validar os CEPs
+ * @param {String} cepOrigem
+ * @param {String} cepDestino
+ */
 const validateAPI = (cepOrigem, cepDestino) => {
   return new Promise((resolve, reject) => {
     $.ajax({
