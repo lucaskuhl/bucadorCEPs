@@ -34,58 +34,96 @@
   <body>
     <div class="container">
       <div class="row text-center mt-5">
-        <h1>Calculador de distâncias</h1>
+        <h1>Calculadora de distâncias</h1>
       </div>
       <div class="row">
         <div class="col-md-8 mb-4 mx-auto mt-5">
-          <form>
-            <div class="form-outline mb-4">
-              <input type="text" id="cep-origem" class="form-control" />
-              <label class="form-label" for="ce-origem" style="margin-left: 0px"
-                >CEP da Origem</label
-              >
-              <div class="form-notch">
-                <div class="form-notch-leading" style="width: 9px"></div>
-                <div class="form-notch-middle" style="width: 88.8px"></div>
-                <div class="form-notch-trailing"></div>
-              </div>
+          <!-- Input cep_origem -->
+          <div class="form-outline mb-4">
+            <input type="text" id="cep-origem" class="form-control" />
+            <label class="form-label" for="ce-origem" style="margin-left: 0px"
+              >CEP da Origem</label
+            >
+            <div class="form-notch">
+              <div class="form-notch-leading" style="width: 9px"></div>
+              <div class="form-notch-middle" style="width: 88.8px"></div>
+              <div class="form-notch-trailing"></div>
             </div>
+          </div>
+          <!-- Input cep_destino -->
+          <div class="form-outline mb-4">
+            <input type="text" id="cep-destino" class="form-control" />
+            <label class="form-label" for="cep-destino" style="margin-left: 0px"
+              >CEP do Destino</label
+            >
+            <div class="form-notch">
+              <div class="form-notch-leading" style="width: 9px"></div>
+              <div class="form-notch-middle" style="width: 64.8px"></div>
+              <div class="form-notch-trailing"></div>
+            </div>
+          </div>
+          <!-- Alertas -->
+          <div id="alertSuccess" class="alert alert-success" role="alert"></div>
+          <div id="alertDanger" class="alert alert-danger" role="alert"></div>
 
-            <div class="form-outline mb-4">
-              <input type="text" id="cep-destino" class="form-control" />
-              <label
-                class="form-label"
-                for="cep-destino"
-                style="margin-left: 0px"
-                >CEP do Destino</label
-              >
-              <div class="form-notch">
-                <div class="form-notch-leading" style="width: 9px"></div>
-                <div class="form-notch-middle" style="width: 64.8px"></div>
-                <div class="form-notch-trailing"></div>
-              </div>
-            </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <!-- Botão de create -->
+            <button class="btn btn-info" type="button" id="btnSend">
+              <span>Calcular distância</span>
+            </button>
+            <button class="btn btn-info" type="button" id="btnLoading" disabled>
+              <span
+                id="loading"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span
+              >Calculando...
+            </button>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button class="btn btn-info" type="button" id="btnSend">
-                <span id="btnText">Calcular distância</span>
-              </button>
-              <button
-                class="btn btn-info"
-                type="button"
-                id="btnLoading"
-                disabled
-              >
-                <span
-                  id="loading"
-                  class="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span
-                >Calculando...
-              </button>
-            </div>
-          </form>
+            <!-- Botão de Update -->
+            <button class="btn btn-secondary" type="button" id="btnUpdate">
+              <span>Atualizar</span>
+            </button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+              id="btnLoadingUpdate"
+              disabled
+            >
+              <span
+                id="loading"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span
+              >Atualizando...
+            </button>
+
+            <!-- Botão de Delete -->
+            <button class="btn btn-danger" type="button" id="btnDelete">
+              <span>Excluir</span>
+            </button>
+            <button
+              class="btn btn-danger"
+              type="button"
+              id="btnLoadingDelete"
+              disabled
+            >
+              <span
+                id="loading"
+                class="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span
+              >Excluindo...
+            </button>
+
+            <!-- Botão de Cancelar -->
+            <button class="btn btn-warning" type="button" id="btnCancel">
+              <span>Cancelar</span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="row col-md mb-4 mx-auto mt-3">
@@ -127,11 +165,25 @@
     src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js"
   ></script>
 
-  <script type="text/javascript" src="./js/create.js"></script>
   <script type="text/javascript" src="./js/validate.js"></script>
+  <script type="text/javascript" src="./js/cancel.js"></script>
+  <script type="text/javascript" src="./js/create.js"></script>
+  <script type="text/javascript" src="./js/update.js"></script>
 
   <script>
+    var selectedId;
+    $("#btnCancel").hide();
+    $("#btnUpdate").hide();
+    $("#btnLoadingUpdate").hide();
+    $("#btnDelete").hide();
+    $("#btnLoadingDelete").hide();
     $("#btnLoading").hide();
+    $("#alertSuccess").hide();
+    $("#alertDanger").hide();
+
+    $("#btnCancel").click(() => {
+      cancel();
+    });
     $.ajax({
       type: "GET",
       dataType: "json",
@@ -160,32 +212,96 @@
       $("#btnLoading").show();
       let cepOrigem = $("#cep-origem").val().trim();
       let cepDestino = $("#cep-destino").val().trim();
-      validate(cepOrigem, cepDestino).then((result) => {
-        if (result["cep_origem"] === false || result["cep_destino"] === false) {
-          $("#btnSend").show();
-          $("#btnLoading").hide();
-          return;
-        }
-        createCep(result.cep_origem, result.cep_destino).then((res) => {
-          $("#btnSend").show();
-          $("#btnLoading").hide();
+      validate(cepOrigem, cepDestino, "#btnSend", "#btnLoading").then(
+        (result) => {
+          if (
+            result["cep_origem"] === false ||
+            result["cep_destino"] === false
+          ) {
+            $("#alertSuccess").hide();
+            $("#alertDanger").show().text("CEP Inválido!");
+            $("#btnSend").show();
+            $("#btnLoading").hide();
+            return;
+          }
+          createCep(result.cep_origem, result.cep_destino).then((res) => {
+            $("#btnSend").show();
+            $("#btnLoading").hide();
 
-          $("#cep-table").DataTable().clear().destroy();
+            $("#cep-table").DataTable().clear().destroy();
 
-          $("#cep-table").DataTable({
-            select: true,
-            data: JSON.parse(res),
-            columns: [
-              { data: "uid" },
-              { data: "cep_origem" },
-              { data: "cep_destino" },
-              { data: "distancia" },
-              { data: "data_cadastro" },
-              { data: "data_update" },
-            ],
+            $("#cep-table").DataTable({
+              select: true,
+              data: JSON.parse(res),
+              columns: [
+                { data: "uid" },
+                { data: "cep_origem" },
+                { data: "cep_destino" },
+                { data: "distancia" },
+                { data: "data_cadastro" },
+                { data: "data_update" },
+              ],
+            });
+            $("#alertSuccess").show().text("Entrada criada com sucesso!");
+            setInterval(() => {
+              $("#alertSuccess").hide().text("Entrada criada com sucesso!");
+            }, 5000);
+            cancel();
           });
-        });
-      });
+        }
+      );
+    });
+
+    $("#cep-table").on("select.dt", function (e, dt, type, indexes) {
+      let data = dt.rows(indexes).data();
+      updateStyle(data[0]);
+      selectedId = data[0]["uid"];
+    });
+
+    $("#btnUpdate").click((e) => {
+      e.preventDefault();
+      $("#btnUpdate").hide();
+      $("#btnLoadingUpdate").show();
+      let cepOrigem = $("#cep-origem").val().trim();
+      let cepDestino = $("#cep-destino").val().trim();
+      validate(cepOrigem, cepDestino, "#btnUpdate", "#btnLoadingUpdate").then(
+        (result) => {
+          if (
+            result["cep_origem"] === false ||
+            result["cep_destino"] === false
+          ) {
+            $("#alertSuccess").hide();
+            $("#alertDanger").show().text("CEP Inválido!");
+            $("#btnUpdate").show();
+            $("#btnLoadingUpdate").hide();
+            return;
+          }
+          updateCep(selectedId, cepOrigem, cepDestino).then((res) => {
+            $("#btnSend").show();
+            $("#btnLoading").hide();
+
+            $("#cep-table").DataTable().clear().destroy();
+
+            $("#cep-table").DataTable({
+              select: true,
+              data: JSON.parse(res),
+              columns: [
+                { data: "uid" },
+                { data: "cep_origem" },
+                { data: "cep_destino" },
+                { data: "distancia" },
+                { data: "data_cadastro" },
+                { data: "data_update" },
+              ],
+            });
+            $("#alertSuccess").show().text("Entrada atualizada com sucesso!");
+            setInterval(() => {
+              $("#alertSuccess").hide().text("Entrada atualizada com sucesso!");
+            }, 5000);
+            cancel();
+          });
+        }
+      );
     });
   </script>
 </html>

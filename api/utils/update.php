@@ -19,6 +19,6 @@ class updateCep
     {
 
         $db = new Database();
-        $db->update($this->id, $this->cepOrigem, $this->cepDestino);
+        return $db->update($this->id, $this->cepOrigem, $this->cepDestino);
     }
 }

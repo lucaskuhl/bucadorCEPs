@@ -1,6 +1,6 @@
-function validate(cepOrigem, cepDestino) {
+const validate = (cepOrigem, cepDestino, btnType, btnLoading) => {
   return new Promise((resolve, reject) => {
-    let validInput = validateInput(cepOrigem, cepDestino);
+    let validInput = validateInput(cepOrigem, cepDestino, btnType, btnLoading);
     if (typeof validInput == "undefined") {
       resolve(
         validateAPI(cepOrigem, cepDestino).then((response) => {
@@ -9,9 +9,9 @@ function validate(cepOrigem, cepDestino) {
       );
     }
   });
-}
+};
 
-const validateInput = (cepOrigem, cepDestino) => {
+const validateInput = (cepOrigem, cepDestino, btnType, btnLoading) => {
   let valid = [];
   if (!cepOrigem || 0 === cepOrigem.length) {
     $("#cep-origem").addClass("is-invalid");
@@ -23,8 +23,8 @@ const validateInput = (cepOrigem, cepDestino) => {
     valid["cep_destino"] = false;
   }
   if (valid["cep_origem"] === false || valid["cep_destino"] === false) {
-    $("#btnSend").show();
-    $("#btnLoading").hide();
+    $(btnType).show();
+    $(btnLoading).hide();
     return valid;
   }
 };

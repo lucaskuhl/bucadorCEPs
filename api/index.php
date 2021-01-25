@@ -29,7 +29,7 @@ if (isset($_GET['action'])) {
 
         case 'update':
             $update = new updateCep($id, $cepOrigem, $cepDestino);
-            var_dump($update->updateCep());
+            echo json_encode($update->updateCep());
             break;
 
         case 'delete':
