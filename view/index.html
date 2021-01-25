@@ -192,6 +192,10 @@
       async: true,
       success: function (response) {
         $("#cep-table").DataTable({
+          language: {
+            url:
+              "//cdn.datatables.net/plug-ins/1.10.22/i18n/Portuguese-Brasil.json",
+          },
           select: true,
           data: JSON.parse(response),
           columns: [
@@ -244,6 +248,10 @@
             $("#cep-table").DataTable().clear().destroy();
 
             $("#cep-table").DataTable({
+              language: {
+                url:
+                  "//cdn.datatables.net/plug-ins/1.10.22/i18n/Portuguese-Brasil.json",
+              },
               select: true,
               data: JSON.parse(res),
               columns: [
@@ -283,6 +291,7 @@
       e.preventDefault();
       $("#btnUpdate").hide();
       $("#btnCancel").hide();
+      $("#btnDelete").hide();
       $("#btnLoadingUpdate").show();
       let cepOrigem = $("#cep-origem").val().trim();
       let cepDestino = $("#cep-destino").val().trim();
@@ -305,6 +314,10 @@
             $("#cep-table").DataTable().clear().destroy();
 
             $("#cep-table").DataTable({
+              language: {
+                url:
+                  "//cdn.datatables.net/plug-ins/1.10.22/i18n/Portuguese-Brasil.json",
+              },
               select: true,
               data: JSON.parse(res),
               columns: [
