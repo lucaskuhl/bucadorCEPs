@@ -27,6 +27,8 @@ Para acessar a dashboard das APIs o login e senha estão dentro do seguinte arqu
 
 ## Como Funciona?
 
+Suporta somente ceps brasileiros, sem caracteres especiais, por exemplo: 89031040.
+
 Preenche-se os campos e clica em calcular distância:
 
 ![GIT 1](https://user-images.githubusercontent.com/30638819/105750088-04906c80-5f23-11eb-9462-d5cda6f33519.png)
