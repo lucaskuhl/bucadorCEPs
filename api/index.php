@@ -18,12 +18,12 @@ if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'add':
             $create = new createCep(['cep_origem' => $cepOrigem, 'cep_destino' => $cepDestino]);
-            var_dump($create->createCep());
+            echo json_encode($create->createCep());
             break;
 
         case 'read':
             $read = new readCep();
-            var_dump($read->readAll());
+            echo json_encode($read->readAll());
             break;
 
         case 'update':

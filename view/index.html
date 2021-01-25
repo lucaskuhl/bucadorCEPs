@@ -1,23 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-    <title>Data Frete Teste</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+    <title>Data Frete - Teste</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.1.0/mdb.min.css"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
-    <div id="app">{{message}}</div>
+    <div class="container">
+      <div class="row text-center mt-5">
+        <h1>Calculador de distâncias</h1>
+      </div>
+      <div class="row">
+        <div class="col-md-8 mb-4 mx-auto mt-5">
+          <form>
+            <div class="form-outline mb-4">
+              <input type="text" id="cep-origem" class="form-control" />
+              <label class="form-label" for="ce-origem" style="margin-left: 0px"
+                >CEP da Origem</label
+              >
+              <div class="form-notch">
+                <div class="form-notch-leading" style="width: 9px"></div>
+                <div class="form-notch-middle" style="width: 88.8px"></div>
+                <div class="form-notch-trailing"></div>
+              </div>
+            </div>
 
-    <script>
-      const App = new Vue({
-          el:'#app',
-          data: {
-              message: 'Hello Vue!'
-          }
-      });
-    </script>
+            <div class="form-outline mb-4">
+              <input type="text" id="cep-destino" class="form-control" />
+              <label
+                class="form-label"
+                for="cep-destino"
+                style="margin-left: 0px"
+                >CEP do Destino</label
+              >
+              <div class="form-notch">
+                <div class="form-notch-leading" style="width: 9px"></div>
+                <div class="form-notch-middle" style="width: 64.8px"></div>
+                <div class="form-notch-trailing"></div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button class="btn btn-info" type="button" id="btnSend">
+                <span id="btnText">Calcular distância</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row col-md mb-4 mx-auto mt-3">
+        <table class="table mx-auto" id="cep-table">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">CEP da Origem</th>
+              <th scope="col">CEP do Destino</th>
+              <th scope="col">Distância</th>
+              <th scope="col">Data do Cadastro</th>
+              <th scope="col">Data da atualização</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
   </body>
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.1.0/mdb.min.js"
+  ></script>
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"
+  ></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"
+  ></script>
+  <script type="text/javascript" src="./js/create.js"></script>
+
+  <script>
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      data: "action=read",
+      url: "../api/index.php",
+      async: true,
+      success: function (response) {
+        $("#cep-table").DataTable({
+          data: JSON.parse(response),
+          columns: [
+            { data: "uid" },
+            { data: "cep_origem" }, //or { data: 'MONTH', title: 'Month' }`
+            { data: "cep_destino" },
+            { data: "distancia" },
+            { data: "data_cadastro" }, //or { data: 'MONTH', title: 'Month' }`
+            { data: "data_update" },
+          ],
+        });
+      },
+    });
+
+    $("#btnSend").click(() => {
+      let cepOrigem = $("#cep-origem").val().trim();
+      let cepDestino = $("#cep-destino").val().trim();
+      let valid = validate(cepOrigem, cepDestino);
+      if (valid[0] === false || valid[1] === false) {
+        console.log("vish");
+        console.log(valid);
+        return;
+      } else {
+        $('#btnText').hide();
+        $("#btnSend").attr("disabled","disabled");
+        $("#btnSend").append(
+          "<span id='loading' class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>Carregando..."
+        );
+        let data = createCep(cepOrigem, cepDestino);
+        console.log(data);
+      }
+      // validate();
+    });
+
+    function validate(cepOrigem, cepDestino) {
+      let valid = [];
+      if (!cepOrigem || 0 === cepOrigem.length) {
+        $("#cep-origem").addClass("is-invalid");
+        valid.push(false);
+      } else {
+        $("#cep-origem").removeClass("is-invalid");
+        $("#cep-origem").addClass("is-valid");
+      }
+
+      if (!cepDestino || 0 === cepDestino.length) {
+        $("#cep-destino").addClass("is-invalid");
+        valid.push(false);
+      } else {
+        $("#cep-destino").removeClass("is-invalid");
+        $("#cep-destino").addClass("is-valid");
+      }
+      return valid;
+    }
+  </script>
 </html>
