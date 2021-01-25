@@ -263,6 +263,7 @@
                 { data: "data_update" },
               ],
             });
+            $("#alertDanger").hide();
             $("#alertSuccess").show().text("Entrada criada com sucesso!");
             setInterval(() => {
               $("#alertSuccess").hide();
@@ -329,6 +330,7 @@
                 { data: "data_update" },
               ],
             });
+            $("#alertDanger").hide();
             $("#alertSuccess").show().text("Entrada atualizada com sucesso!");
             setInterval(() => {
               $("#alertSuccess").hide();
@@ -354,6 +356,7 @@
 
       deleteCep(selectedId).then((res) => {
         if (res.action === true) {
+          $("#alertDanger").hide();
           $("#alertSuccess").show().text("Entrada excluída com sucesso!");
           setInterval(() => {
             $("#alertSuccess").hide();
