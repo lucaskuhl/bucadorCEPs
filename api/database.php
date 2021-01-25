@@ -50,7 +50,7 @@ class Database
                 [
                     'cep_origem' => $cepOrigem,
                     'cep_destino' => $cepDestino,
-                    'distancia' => $distance,
+                    'distancia' => $distance . "Km",
                     'data_update' => date('d/m/Y H:i:s')
                 ]
             ]

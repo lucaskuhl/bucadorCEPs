@@ -29,7 +29,7 @@ class createCep
         $data['uid'] = $lastIdObj->getLastId();
         $data['cep_origem'] = $this->cepOrigem;
         $data['cep_destino'] = $this->cepDestino;
-        $data['distancia'] = $this->distancia;
+        $data['distancia'] = $this->distancia . 'Km';
 
         $db = new Database();
         $action = $db->add($data);

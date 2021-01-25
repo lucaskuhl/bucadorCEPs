@@ -12,8 +12,14 @@
       rel="stylesheet"
     />
     <link
-      href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"
       rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/select/1.3.1/css/select.bootstrap4.css"
     />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
@@ -110,8 +116,17 @@
   ></script>
   <script
     type="text/javascript"
-    src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"
+    src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"
   ></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.js"
+  ></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js"
+  ></script>
+
   <script type="text/javascript" src="./js/create.js"></script>
   <script type="text/javascript" src="./js/validate.js"></script>
 
@@ -125,6 +140,7 @@
       async: true,
       success: function (response) {
         $("#cep-table").DataTable({
+          select: true,
           data: JSON.parse(response),
           columns: [
             { data: "uid" },
@@ -157,6 +173,7 @@
           $("#cep-table").DataTable().clear().destroy();
 
           $("#cep-table").DataTable({
+            select: true,
             data: JSON.parse(res),
             columns: [
               { data: "uid" },
