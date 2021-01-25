@@ -169,6 +169,7 @@
   <script type="text/javascript" src="./js/cancel.js"></script>
   <script type="text/javascript" src="./js/create.js"></script>
   <script type="text/javascript" src="./js/update.js"></script>
+  <script type="text/javascript" src="./js/delete.js"></script>
 
   <script>
     var selectedId;
@@ -244,7 +245,7 @@
             });
             $("#alertSuccess").show().text("Entrada criada com sucesso!");
             setInterval(() => {
-              $("#alertSuccess").hide().text("Entrada criada com sucesso!");
+              $("#alertSuccess").hide();
             }, 5000);
             cancel();
           });
@@ -261,6 +262,7 @@
     $("#btnUpdate").click((e) => {
       e.preventDefault();
       $("#btnUpdate").hide();
+      $("#btnCancel").hide();
       $("#btnLoadingUpdate").show();
       let cepOrigem = $("#cep-origem").val().trim();
       let cepDestino = $("#cep-destino").val().trim();
@@ -296,12 +298,32 @@
             });
             $("#alertSuccess").show().text("Entrada atualizada com sucesso!");
             setInterval(() => {
-              $("#alertSuccess").hide().text("Entrada atualizada com sucesso!");
+              $("#alertSuccess").hide();
             }, 5000);
             cancel();
           });
         }
       );
+    });
+
+    $("#btnDelete").click((e) => {
+      e.preventDefault();
+      $("#btnUpdate").hide();
+      $("#btnDelete").hide();
+      $("#btnCancel").hide();
+      $("#btnLoadingDelete").show();
+
+      deleteCep(selectedId).then((res) => {
+        if (res.action === true) {
+          $("#alertSuccess").show().text("Entrada excluída com sucesso!");
+          setInterval(() => {
+            $("#alertSuccess").hide();
+          }, 5000);
+          cancel();
+          var table = $("#cep-table").DataTable();
+          table.row(".selected").remove().draw();
+        }
+      });
     });
   </script>
 </html>

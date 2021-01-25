@@ -13,14 +13,6 @@ const updateCep = (uid, cep_origem, cep_destino) => {
 
 const updateAPI = (cepId, cepOrigem, cepDestino) => {
   return new Promise((resolve, reject) => {
-    console.log(
-      "action=update&cep_id=" +
-        cepId +
-        "&cep_origem=" +
-        cepOrigem +
-        "&cep_destino=" +
-        cepDestino
-    );
     $.ajax({
       type: "GET",
       dataType: "json",
@@ -34,7 +26,6 @@ const updateAPI = (cepId, cepOrigem, cepDestino) => {
       url: "../api/index.php",
       async: true,
       success: function (response) {
-        console.log(response);
         resolve(response);
       },
     });
@@ -46,6 +37,7 @@ const updateStyle = (data) => {
   let cepDestino = data.cep_destino;
 
   $("#btnUpdate").show();
+  $("#btnDelete").show();
   $("#btnCancel").show();
 
   $("#btnSend").hide();

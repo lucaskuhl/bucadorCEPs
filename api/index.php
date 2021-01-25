@@ -34,7 +34,7 @@ if (isset($_GET['action'])) {
 
         case 'delete':
             $delete = new deleteCep($id);
-            var_dump($delete->deleteCep());
+            echo json_encode($delete->deleteCep());
             break;
 
         case 'validate':

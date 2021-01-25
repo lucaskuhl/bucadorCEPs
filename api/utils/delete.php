@@ -12,6 +12,6 @@ class deleteCep
     public function deleteCep()
     {
         $db = new Database();
-        $db->delete($this->id);
+        return $db->delete($this->id);
     }
 }
