@@ -1,8 +1,9 @@
-# Teste - Data Frete
+# Buscador CEPs
 > Cadastro de CEPs e Cálculo de distâncias
 
-O seguinte projeto é criado para satisfazer as condições do processo seletivo da Data Frete. 
-Como pedido por e-mail, ele faz as funções de cadastro básicas: criar, ler, atualizar e excluir. Recebendo um CEP de Origem e um CEP de Destino ele faz o cálculo da distância entre eles. Usa como método de validação as APIs [CEP Aberto](https://cepaberto.com/) e [TomTomDeveloper](https://developer.tomtom.com/)
+O seguinte projeto é um buscador de CEP que recebe dois CEPs e faz o cálculo da distância entre eles.
+
+O projeto conta com o CRUD básico: criar, ler, atualizar e excluir. Recebendo um CEP de Origem e um CEP de Destino ele faz o cálculo da distância entre eles. Usa como método de validação as APIs [CEP Aberto](https://cepaberto.com/) e [TomTomDeveloper](https://developer.tomtom.com/)
 
 ## Instalação
 
